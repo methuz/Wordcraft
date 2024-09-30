@@ -1,0 +1,10 @@
+[package]
+name = "anki_rust_project"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.26", features = ["full"] }
