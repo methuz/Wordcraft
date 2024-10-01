@@ -1,5 +1,5 @@
 [package]
-name = "anki_rust_project"
+name = "autoflashcard"
 version = "0.1.0"
 edition = "2021"
 
