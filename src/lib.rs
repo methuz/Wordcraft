@@ -5,24 +5,26 @@ use std::env;
 
 pub struct AnkiAdapter {
     url: String,
+    client: Client,
 }
 
 impl AnkiAdapter {
     pub fn new() -> Result<AnkiAdapter, &'static str> {
-        let url = match env::var("ANKI_CONNECT_URL") {
-            Ok(val) => val,
-            Err(_) => {
-                println!("ANKI_CONNECT_URL not set. Using default value.");
-                "http://localhost:8765".to_string()
-            }
+        let mut adapter = AnkiAdapter{
+            url: "http://localhost:8765".to_string(),
+            client: Client::new(),
         };
 
-        Ok(AnkiAdapter { url })
+        if let Ok(url) = env::var("ANKI_CONNECT_URL") {
+            adapter.url = url;
+        } else {
+            println!("ANKI_CONNECT_URL not set. Using default url: {}", adapter.url);
+        };
+
+        Ok(adapter)
     }
 
     pub async fn create_deck(&self, deck_name: &str) -> Result<(), Box<dyn std::error::Error>> {
-        let client = Client::new();
-
         let request =
             json!({
         "action": "createDeck",
@@ -32,7 +34,7 @@ impl AnkiAdapter {
         }
     });
 
-        let response = client
+        let response = &self.client
             .post(&self.url)
             .json(&request)
             .send().await?
@@ -53,8 +55,6 @@ impl AnkiAdapter {
         front: &str,
         back: &str
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let client = Client::new();
-
         let request =
             json!({
         "action":"addNote",
@@ -75,7 +75,7 @@ impl AnkiAdapter {
         }
     });
 
-        let response = client
+        let response = &self.client
             .post(&self.url)
             .json(&request)
             .send().await?
