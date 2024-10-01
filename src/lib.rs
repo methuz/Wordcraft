@@ -10,7 +10,7 @@ pub struct AnkiAdapter {
 
 impl AnkiAdapter {
     pub fn new() -> Result<AnkiAdapter, &'static str> {
-        let mut adapter = AnkiAdapter{
+        let mut adapter = AnkiAdapter {
             url: "http://localhost:8765".to_string(),
             client: Client::new(),
         };
@@ -19,7 +19,7 @@ impl AnkiAdapter {
             adapter.url = url;
         } else {
             println!("ANKI_CONNECT_URL not set. Using default url: {}", adapter.url);
-        };
+        }
 
         Ok(adapter)
     }
@@ -40,8 +40,12 @@ impl AnkiAdapter {
             .send().await?
             .json::<serde_json::Value>().await?;
 
-        if response.get("error").is_some() {
-            println!("Error creating deck {:?}", response["error"]);
+        if let Some(error) = response.get("error") {
+            if !error.is_null() {
+                println!("Error creating deck: {:?}", error.to_string());
+            } else {
+                println!("Deck '{}' created successfully.", deck_name);
+            }
         } else {
             println!("Deck '{}' ccreated successfully.", deck_name);
         }
@@ -81,10 +85,14 @@ impl AnkiAdapter {
             .send().await?
             .json::<serde_json::Value>().await?;
 
-        if response.get("error").is_some() {
-            println!("Error adding card: {:?}", response["error"]);
+        if let Some(error) = response.get("error") {
+            if !error.is_null() {
+                println!("Error adding card: {:?}", error.to_string());
+            } else {
+                println!("Adding card to '{}' successfully.", deck_name);
+            }
         } else {
-            println!("Card added successfully to deck '{}'.", deck_name);
+            println!("Adding card to '{}' successfully.", deck_name);
         }
 
         Ok(())
