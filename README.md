@@ -1,6 +1,10 @@
 # Readme
 
-## About this project
+## About Wordcraft
+
+Wordcraft is an intelligent tool designed to streamline language learning by automatically generating customized Anki cards. Wordcraft leverages OpenAI’s API to create flashcards that suit your specific learning needs.
+
+## Motivation
 
 I find that many language learning software programs do not meet my needs. For example, Duolingo can be too easy for learning English and cannot be customized to focus on what I want to learn.
 
