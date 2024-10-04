@@ -1,10 +1,11 @@
 use autoflashcard::anki_adapter::AnkiAdapter;
 use autoflashcard::open_ai_adapter::generate_flashcards;
 use std::process;
+use dotenv::dotenv;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // let deck_name = "New Deck about Greetings";
+    dotenv().ok();
 
     let adapter = AnkiAdapter::new().unwrap_or_else(|err| {
         eprintln!("Problem creating new adapter: {err}");
