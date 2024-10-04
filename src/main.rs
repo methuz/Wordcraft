@@ -1,32 +1,51 @@
-use autoflashcard::anki_adapter::AnkiAdapter;
-use autoflashcard::open_ai_adapter::generate_flashcards;
 use std::process;
 use dotenv::dotenv;
+
+use autoflashcard::anki_adapter::AnkiAdapter;
+use autoflashcard::open_ai_adapter::generate_flashcards;
+use autoflashcard::prompt::FlashcardSettings;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
+
+    let settings = FlashcardSettings::new();
+
+    println!("Flashcard Generation Settings:");
+    println!("Native Language: {}", settings.native_language);
+    println!("Target Language: {}", settings.target_language);
+    println!("Topic: {}", settings.topic);
 
     let adapter = AnkiAdapter::new().unwrap_or_else(|err| {
         eprintln!("Problem creating new adapter: {err}");
         process::exit(1);
     });
 
+    let complete_prompt = format!(
+        "Native Language: {}\nTarget Language: {}\nTopic: {}\n",
+        settings.native_language,
+        settings.target_language,
+        settings.topic
+    );
 
-    let user_input = "Generate flashcard deck to teach me Japanese greetings";
+    println!("Generating flashcards for:\n{}", &complete_prompt);
 
-    println!("Generating flashcards for: {}", user_input);
-    let response = generate_flashcards(user_input).await?;
+    let response = generate_flashcards(&complete_prompt).await?;
 
-    println!("Inserting deck into Anki: {}", response.deck_name);
-    
-    adapter.create_deck(&response.deck_name).await?;
-
-    println!("Inserting card into deck: {}", response.deck_name);
-    for card in &response.cards {
-        adapter
-            .add_card(&response.deck_name, &card.front, &card.back, "", "")
-            .await?;
+    // TODO: refactor this to use the prompt module, and add to existing deck if user chooses
+    if let Some(deck_name) = &settings.deck_name {
+        println!("Adding to existing deck: {}", deck_name);
+        for card in &response.cards {
+            adapter.add_card(deck_name, &card.front, &card.back, "", "").await?;
+        }
+    } else {
+        println!("No existing deck provided.");
+        adapter.create_deck(&response.deck_name).await?;
+        
+        println!("Inserting card into deck: {}", &response.deck_name);
+        for card in &response.cards {
+            adapter.add_card(&response.deck_name, &card.front, &card.back, "", "").await?;
+        }
     }
 
     Ok(())
