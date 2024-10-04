@@ -23,6 +23,7 @@ This is my first public project built in Rust. Feel free to submit pull requests
  - [x] It works!
  - [x] Can add cards to existing deck
  - [x] Support any language
+ - [ ] Custom card type, Add example and solution
  - [ ] Refactor & Test Coverage
  - [ ] Executable file (BIN)
  - [ ] GUI
