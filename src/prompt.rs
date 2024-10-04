@@ -93,6 +93,27 @@ fn prompt_existing_deck(prompt: &str) -> Option<String> {
     }
 }
 
+pub fn ask_for_confirmation(prompt: &str) -> bool {
+    let mut input = String::new();
+
+    // Prompt the user for confirmation
+    print!("{}", prompt);
+    io::stdout().flush().unwrap(); // Ensure the prompt is shown
+
+    // Read the user's input
+    io::stdin().read_line(&mut input).unwrap();
+
+    // Trim the input and check for 'y' or 'Y'
+    match input.trim().to_lowercase().as_str() {
+        "y" => true,
+        "n" => false,
+        _ => {
+            println!("Invalid input. Please enter 'y' or 'n'.");
+            ask_for_confirmation(prompt) // Recursively ask again for valid input
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

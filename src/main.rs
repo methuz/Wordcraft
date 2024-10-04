@@ -4,6 +4,7 @@ use dotenv::dotenv;
 use autoflashcard::anki_adapter::AnkiAdapter;
 use autoflashcard::open_ai_adapter::generate_flashcards;
 use autoflashcard::prompt::FlashcardSettings;
+use autoflashcard::prompt::ask_for_confirmation;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -26,6 +27,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Generating flashcards for:\n{}", &complete_prompt);
 
     let response = generate_flashcards(&complete_prompt).await?;
+
+    response.cards.iter().for_each(|card| {
+        println!("Front: {}\nBack: {}\nExample: {}\nExample Translation: {}\n", card.front, card.back, card.example, card.example_translate);
+    });
+
+    if ask_for_confirmation("Would you like to add these flashcards? (y/n)") {
+        println!("Adding flashcards to Anki...");
+    } else {
+        println!("Exiting without adding flashcards.");
+        process::exit(0);
+    }
 
     // TODO: refactor this to use the prompt module, and add to existing deck if user chooses
     if let Some(deck_name) = &settings.deck_name {
