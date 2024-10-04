@@ -22,6 +22,7 @@ This is my first public project built in Rust. Feel free to submit pull requests
  - [ ] Refactor & Test Coverage
  - [ ] Executable file (BIN)
  - [ ] GUI
+ - [ ] Automated generate audio
  - [ ] Retrieval Augmented Generation (RAG) : Fetch user's known words from Anki and generate lesson using AI
 
 
