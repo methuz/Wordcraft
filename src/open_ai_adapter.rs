@@ -58,6 +58,7 @@ Default target language is Japanese.
 You only respond with this type of answer:
 - Generate flashcard deck
 Return JSON for the user to insert into a Flashcard application
+Result should contains at least 15 flashcards.
 Front of the flashcard should be in the target language. If the word is in Kanji, add readings in Hiragana and Romaji after the Kanji.
 Back of the flashcard should be in the user's native language.
 Example should be in the target language.

@@ -11,11 +11,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let settings = FlashcardSettings::new();
 
-    println!("Flashcard Generation Settings:");
-    println!("Native Language: {}", settings.native_language);
-    println!("Target Language: {}", settings.target_language);
-    println!("Topic: {}", settings.topic);
-
     let adapter = AnkiAdapter::new().unwrap_or_else(|err| {
         eprintln!("Problem creating new adapter: {err}");
         process::exit(1);
