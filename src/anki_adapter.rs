@@ -89,12 +89,12 @@ impl AnkiAdapter {
 
         if let Some(error) = response.get("error") {
             if !error.is_null() {
-                println!("Error adding card: {:?}", error.to_string());
+                println!("Error adding card: {:?}", error);
             } else {
-                println!("Adding card to '{}' successfully.", deck_name);
+                println!("Card added successfully to '{}'.", deck_name);
             }
         } else {
-            println!("Adding card to '{}' successfully.", deck_name);
+            println!("Card added successfully to '{}'.", deck_name);
         }
 
         Ok(())
