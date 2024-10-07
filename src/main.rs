@@ -1,5 +1,6 @@
 use std::process;
 use dotenv::dotenv;
+use tokio::time::{timeout, Duration};
 
 use autoflashcard::anki_adapter::AnkiAdapter;
 use autoflashcard::open_ai_adapter::generate_flashcards;
@@ -10,12 +11,29 @@ use autoflashcard::prompt::ask_for_confirmation;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
-    let settings = FlashcardSettings::new();
-
     let adapter = AnkiAdapter::new().unwrap_or_else(|err| {
         eprintln!("Problem creating new adapter: {err}");
         process::exit(1);
     });
+
+    // Check if Anki Connect is available with a timeout
+    println!("Checking if Anki Connect is available...");
+    match timeout(Duration::from_secs(2), adapter.check_connection()).await {
+        Ok(result) => match result {
+            Ok(_) => println!("Successfully connected to Anki."),
+            Err(err) => {
+                eprintln!("Error connecting to Anki: {}", err);
+                eprintln!("Please make sure Anki is running and AnkiConnect is installed.");
+                process::exit(1);
+            }
+        },
+        Err(_) => {
+            eprintln!("Timeout while connecting to Anki. Please make sure Anki is running and AnkiConnect is installed.");
+            process::exit(1);
+        }
+    }
+
+    let settings = FlashcardSettings::new();
 
     let complete_prompt = format!(
         "Native Language: {}\nTarget Language: {}\nTopic: {}\n",

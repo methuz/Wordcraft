@@ -1,6 +1,6 @@
 use reqwest::Client;
 use serde::{ Deserialize, Serialize };
-use serde_json::json;
+use serde_json::{Value, json};
 use std::env;
 
 pub struct AnkiAdapter {
@@ -98,5 +98,25 @@ impl AnkiAdapter {
         }
 
         Ok(())
+    }
+
+    pub async fn check_connection(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let request = json!({
+            "action": "version",
+            "version": 6
+        });
+
+        let response: Value = self.client.post(&self.url)
+            .json(&request)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        if response["error"].is_null() {
+            Ok(())
+        } else {
+            Err(format!("AnkiConnect error: {}", response["error"]).into())
+        }
     }
 }
