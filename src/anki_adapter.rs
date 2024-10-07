@@ -58,30 +58,31 @@ impl AnkiAdapter {
         deck_name: &str,
         front: &str,
         back: &str,
-        _example: &str,
-        _example_translate: &str
+        example: &str,
+        example_translate: &str
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let request =
-            json!({
-        "action":"addNote",
-        "version": 6,
-        "params": {
-            "note":{
-                "deckName": deck_name,
-                "modelName": "Basic",
-                "fields": {
-                    "Front": front,
-                    "Back": back
-                },
-                "options": {
-                    "allowDuplicate": false
-                },
-                "tags": ["rust", "programming"]
+        let request = json!({
+            "action": "addNote",
+            "version": 6,
+            "params": {
+                "note": {
+                    "deckName": deck_name,
+                    "modelName": "Wordcraft",
+                    "fields": {
+                        "Front": front,
+                        "Back": back,
+                        "Example": example,
+                        "ExampleTranslation": example_translate
+                    },
+                    "options": {
+                        "allowDuplicate": false
+                    },
+                    "tags": ["wordcraft", "language_learning"]
+                }
             }
-        }
-    });
+        });
 
-        let response = &self.client
+        let response = self.client
             .post(&self.url)
             .json(&request)
             .send().await?
@@ -89,14 +90,11 @@ impl AnkiAdapter {
 
         if let Some(error) = response.get("error") {
             if !error.is_null() {
-                println!("Error adding card: {:?}", error);
-            } else {
-                println!("Card added successfully to '{}'.", deck_name);
+                return Err(format!("Error adding card: {}", error).into());
             }
-        } else {
-            println!("Card added successfully to '{}'.", deck_name);
         }
 
+        println!("Card added successfully.");
         Ok(())
     }
 
@@ -118,5 +116,75 @@ impl AnkiAdapter {
         } else {
             Err(format!("AnkiConnect error: {}", response["error"]).into())
         }
+    }
+
+    pub async fn ensure_wordcraft_model_exists(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let model_name = "Wordcraft";
+        
+        // Check if the model exists
+        let request = json!({
+            "action": "modelNames",
+            "version": 6
+        });
+
+        let response = self.client
+            .post(&self.url)
+            .json(&request)
+            .send().await?
+            .json::<serde_json::Value>().await?;
+
+        let model_names = response["result"].as_array()
+            .ok_or("Failed to get model names")?;
+
+        if !model_names.contains(&json!(model_name)) {
+            // Create the model if it doesn't exist
+            let request = json!({
+                "action": "createModel",
+                "version": 6,
+                "params": {
+                    "modelName": model_name,
+                    "inOrderFields": ["Front", "Back", "Example", "ExampleTranslation"],
+                    "css": ".card {
+                        font-family: arial;
+                        font-size: 20px;
+                        text-align: center;
+                        color: black;
+                        background-color: white;
+                    }
+                    .front {
+                        font-weight: bold;
+                    }
+                    .example {
+                        font-style: italic;
+                        color: #555;
+                    }",
+                    "cardTemplates": [
+                        {
+                            "Name": "Card 1",
+                            "Front": "<div class='front'>{{Front}}</div><br><div class='example'>{{Example}}</div>",
+                            "Back": "<div class='front'>{{Front}}</div><hr id=answer><div>{{Back}}</div><br><div class='example'>{{Example}}</div><br><div>{{ExampleTranslation}}</div>"
+                        }
+                    ]
+                }
+            });
+
+            let response = self.client
+                .post(&self.url)
+                .json(&request)
+                .send().await?
+                .json::<serde_json::Value>().await?;
+
+            if let Some(error) = response.get("error") {
+                if !error.is_null() {
+                    return Err(format!("Error creating Wordcraft model: {}", error).into());
+                }
+            }
+
+            println!("Wordcraft model created successfully.");
+        } else {
+            println!("Wordcraft model already exists.");
+        }
+
+        Ok(())
     }
 }

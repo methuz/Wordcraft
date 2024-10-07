@@ -33,6 +33,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Ensure the Wordcraft model exists
+    adapter.ensure_wordcraft_model_exists().await?;
+
     let settings = FlashcardSettings::new();
 
     let complete_prompt = format!(
