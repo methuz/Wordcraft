@@ -71,8 +71,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("Inserting cards into deck: {}", deck_name);
     for card in &response.cards {
-        println!("Adding card - Front: '{}', Back: '{}'", &card.front, &card.back);
-        adapter.add_card(deck_name, &card.front, &card.back, "", "").await?;
+        println!("Adding card - Front: '{}', Back: '{}', Example: '{}', Example Translation: '{}'", &card.front, &card.back, &card.example, &card.example_translate);
+        adapter.add_card(deck_name, &card.front, &card.back, &card.example, &card.example_translate).await?;
     }
 
     Ok(())
