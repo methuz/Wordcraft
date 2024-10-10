@@ -23,7 +23,9 @@ This is my first public project built in Rust. Feel free to submit pull requests
  - [x] It works!
  - [x] Can add cards to existing deck
  - [x] Support any language
- - [ ] Custom card type, Add example and solution
+ - [x] Custom card type, Add example and solution
+ - [ ] fetch word from Anki if existing deck is provided
+ - [ ] Support local LLM
  - [ ] Refactor & Test Coverage
  - [ ] Executable file (BIN)
  - [ ] GUI
