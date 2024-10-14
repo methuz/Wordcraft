@@ -3,7 +3,7 @@ use dotenv::dotenv;
 use tokio::time::{timeout, Duration};
 
 use autoflashcard::anki_adapter::AnkiAdapter;
-use autoflashcard::open_ai_adapter::generate_flashcards;
+use autoflashcard::langchain::generate_flashcards;
 use autoflashcard::prompt::FlashcardSettings;
 use autoflashcard::prompt::ask_for_confirmation;
 

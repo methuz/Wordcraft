@@ -18,8 +18,7 @@ use langchain_rust::{
     template_fstring,
 };
 
-use crate::prompts::SYSTEM_MESSAGE;
-
+use crate::constant::SYSTEM_MESSAGE;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FlashcardResponse {
