@@ -156,7 +156,7 @@ impl AnkiAdapter {
                     }
                     .example {
                         font-style: italic;
-                        color: #555;
+                        color: #AAA;
                     }",
                     "cardTemplates": [
                         {
