@@ -1,7 +1,5 @@
 // src/lib.rs
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use reqwest::Client;
 use std::env;
 use std::process;
 use regex::Regex;
@@ -11,6 +9,7 @@ use langchain_rust::{
     fmt_message, fmt_placeholder, fmt_template,
     language_models::llm::LLM,
     llm::openai::{OpenAI, OpenAIModel, OpenAIConfig},
+    llm::ollama::client::Ollama,
     message_formatter,
     prompt::HumanMessagePromptTemplate,
     prompt_args,
@@ -35,10 +34,16 @@ pub struct Flashcard {
 }
 
 pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, Box<dyn std::error::Error>> {
-     let open_ai = OpenAI::default().with_config(
-        OpenAIConfig::default()
-            .with_api_key(env::var("OPEN_API_KEY").unwrap()),
-    );
+    let engine = env::var("ENGINE").unwrap_or("openai".to_string());
+
+    let engine = match engine.as_str() {
+        "openai" => Box::new(OpenAI::default().with_config(
+            OpenAIConfig::default()
+                .with_api_key(env::var("OPEN_API_KEY").unwrap()),
+        )) as Box<dyn LLM>,
+        "ollama" => Box::new(Ollama::default().with_model("llama3.2")) as Box<dyn LLM>,
+        _ => panic!("Unsupported engine"),
+    };
 
     let prompt = message_formatter![
         fmt_message!(Message::new_system_message(
@@ -51,7 +56,7 @@ pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, 
 
     let chain = LLMChainBuilder::new()
         .prompt(prompt)
-        .llm(open_ai.clone())
+        .llm(engine)
         .build()
         .unwrap();
 
@@ -66,6 +71,8 @@ pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, 
         }
         Err(e) => panic!("Error invoking LLMChain: {:?}", e),
     };
+
+    println!("text: {}", text);
 
     // Extract JSON from the response
     let json_text = extract_json(&text)?;

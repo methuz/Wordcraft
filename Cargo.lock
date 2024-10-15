@@ -1056,6 +1056,7 @@ dependencies = [
  "html-escape",
  "log",
  "mockito",
+ "ollama-rs",
  "readability",
  "regex",
  "reqwest 0.12.8",
@@ -1267,6 +1268,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "084f1a5821ac4c651660a94a7153d27ac9d8a53736203f58b31945ded098070a"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "ollama-rs"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46483ac9e1f9e93da045b5875837ca3c9cf014fd6ab89b4d9736580ddefc4759"
+dependencies = [
+ "async-stream",
+ "async-trait",
+ "log",
+ "reqwest 0.12.8",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+ "url",
 ]
 
 [[package]]
