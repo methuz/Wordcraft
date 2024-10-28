@@ -12,7 +12,7 @@ I’ve found that Anki is one of the best tools for learning any language. Anki 
 
 Anki serves me well, and I find that many community-made decks help me get started with new languages. However, my main issue is that I often want decks in specific areas, such as colors in Japanese. To address this, I need to create my own decks, which is very time-consuming.
 
-That’s why I created this project: to use the OpenAI API (ChatGPT) to automatically generate cards and add them to Anki.
+That’s why I created this project: to use the LLM's API (ChatGPT, Ollama) to automatically generate cards and add them to Anki.
 
 I aim to create a graphical user interface (GUI) and implement Retrieval-Augmented Generation (RAG). The RAG feature will fetch known words from the user’s existing Anki decks, enabling the AI to assess the user’s language level and automatically generate lessons that are appropriately tailored to their needs.
 
