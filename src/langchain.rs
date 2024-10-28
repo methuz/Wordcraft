@@ -41,7 +41,9 @@ pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, 
             OpenAIConfig::default()
                 .with_api_key(env::var("OPEN_API_KEY").unwrap()),
         )) as Box<dyn LLM>,
-        "ollama" => Box::new(Ollama::default().with_model("gemma2")) as Box<dyn LLM>,
+        "ollama" => Box::new(Ollama::default().with_model(
+            &env::var("OLLAMA_MODEL").unwrap_or("gemma2".to_string())
+        )) as Box<dyn LLM>,
         _ => panic!("Unsupported engine"),
     };
 
@@ -72,7 +74,7 @@ pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, 
         Err(e) => panic!("Error invoking LLMChain: {:?}", e),
     };
 
-    println!("text: {}", text);
+    // println!("text: {}", text);
 
     // Extract JSON from the response
     let json_text = extract_json(&text)?;
