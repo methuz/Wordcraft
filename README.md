@@ -24,12 +24,12 @@ This is my first public project built in Rust. Feel free to submit pull requests
  - [x] Can add cards to existing deck
  - [x] Support any language
  - [x] Custom card type, Add example and solution
- - [ ] fetch word from Anki if existing deck is provided
- - [ ] Support local LLM
- - [ ] Refactor & Test Coverage
- - [ ] Executable file (BIN)
+ - [x] Support local LLM
  - [ ] GUI
  - [ ] Automated generate audio
+ - [ ] fetch word from Anki if existing deck is provided
+ - [ ] Refactor & Test Coverage
+ - [ ] Executable file (BIN)
  - [ ] Retrieval Augmented Generation (RAG) : Fetch user's known words from Anki and generate lesson using AI
 
 
