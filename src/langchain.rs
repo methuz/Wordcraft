@@ -41,7 +41,7 @@ pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, 
             OpenAIConfig::default()
                 .with_api_key(env::var("OPEN_API_KEY").unwrap()),
         )) as Box<dyn LLM>,
-        "ollama" => Box::new(Ollama::default().with_model("llama3.2")) as Box<dyn LLM>,
+        "ollama" => Box::new(Ollama::default().with_model("gemma2")) as Box<dyn LLM>,
         _ => panic!("Unsupported engine"),
     };
 
