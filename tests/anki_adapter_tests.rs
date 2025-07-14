@@ -3,8 +3,8 @@ use mockito::{Mock, Server};
 use serde_json::json;
 use serial_test::serial;
 
-fn setup_mock_server() -> (mockito::ServerGuard, AnkiAdapter) {
-    let server = mockito::Server::new();
+async fn setup_mock_server() -> (mockito::ServerGuard, AnkiAdapter) {
+    let server = mockito::Server::new_async().await;
     let url = server.url();
     std::env::set_var("ANKI_CONNECT_URL", &url);
     
@@ -33,7 +33,7 @@ async fn test_anki_adapter_new_with_custom_url() {
 #[tokio::test]
 #[serial]
 async fn test_check_connection_success() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .with_body(json!({
@@ -49,7 +49,7 @@ async fn test_check_connection_success() {
 #[tokio::test]
 #[serial]
 async fn test_check_connection_failure() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .with_body(json!({
@@ -66,7 +66,7 @@ async fn test_check_connection_failure() {
 #[tokio::test]
 #[serial]
 async fn test_create_deck_success() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .match_body(mockito::Matcher::JsonString(json!({
@@ -89,7 +89,7 @@ async fn test_create_deck_success() {
 #[tokio::test]
 #[serial]
 async fn test_create_deck_already_exists() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .with_body(json!({
@@ -105,7 +105,7 @@ async fn test_create_deck_already_exists() {
 #[tokio::test]
 #[serial]
 async fn test_add_card_success() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .match_body(mockito::Matcher::JsonString(json!({
@@ -148,7 +148,7 @@ async fn test_add_card_success() {
 #[tokio::test]
 #[serial]
 async fn test_add_card_duplicate_error() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .with_body(json!({
@@ -172,7 +172,7 @@ async fn test_add_card_duplicate_error() {
 #[tokio::test]
 #[serial]
 async fn test_ensure_wordcraft_model_exists_already_exists() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _m = server.mock("POST", "/")
         .match_body(mockito::Matcher::JsonString(json!({
@@ -192,7 +192,7 @@ async fn test_ensure_wordcraft_model_exists_already_exists() {
 #[tokio::test]
 #[serial]
 async fn test_ensure_wordcraft_model_creates_new() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let model_check = server.mock("POST", "/")
         .match_body(mockito::Matcher::JsonString(json!({
@@ -229,7 +229,7 @@ async fn test_ensure_wordcraft_model_creates_new() {
 #[tokio::test]
 #[serial]
 async fn test_ensure_wordcraft_model_create_error() {
-    let (mut server, adapter) = setup_mock_server();
+    let (mut server, adapter) = setup_mock_server().await;
     
     let _model_check = server.mock("POST", "/")
         .match_body(mockito::Matcher::JsonString(json!({
@@ -261,7 +261,7 @@ async fn test_ensure_wordcraft_model_create_error() {
 #[tokio::test]
 #[serial]
 async fn test_connection_timeout() {
-    let (server, adapter) = setup_mock_server();
+    let (server, adapter) = setup_mock_server().await;
     // Don't create any mock, so the server won't respond
     drop(server); // Drop server to simulate connection failure
     

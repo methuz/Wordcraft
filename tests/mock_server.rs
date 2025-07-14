@@ -6,8 +6,8 @@ pub struct MockAnkiServer {
 }
 
 impl MockAnkiServer {
-    pub fn new() -> Self {
-        let server = Server::new();
+    pub async fn new() -> Self {
+        let server = Server::new_async().await;
         std::env::set_var("ANKI_CONNECT_URL", &server.url());
         
         Self { server }
@@ -266,7 +266,7 @@ mod tests {
     #[tokio::test]
     #[serial]
     async fn test_mock_server_setup() {
-        let mut mock_server = MockAnkiServer::new();
+        let mut mock_server = MockAnkiServer::new().await;
         let _connection_mock = mock_server.mock_successful_connection();
         
         let adapter = AnkiAdapter::new().expect("Failed to create adapter");
@@ -278,7 +278,7 @@ mod tests {
     #[tokio::test]
     #[serial]
     async fn test_workflow_mocks() {
-        let mut mock_server = MockAnkiServer::new();
+        let mut mock_server = MockAnkiServer::new().await;
         let mocks = mock_server.setup_successful_workflow("TestDeck", 2);
         
         let adapter = AnkiAdapter::new().expect("Failed to create adapter");

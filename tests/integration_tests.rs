@@ -9,7 +9,7 @@ use serial_test::serial;
 #[serial]
 async fn test_full_workflow_with_mock_anki() {
     // Setup mock server
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     let url = server.url();
     std::env::set_var("ANKI_CONNECT_URL", &url);
     
@@ -146,7 +146,7 @@ async fn test_full_workflow_with_mock_anki() {
 #[serial]
 async fn test_error_handling_in_workflow() {
     // Setup mock server
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     let url = server.url();
     std::env::set_var("ANKI_CONNECT_URL", &url);
     
@@ -179,7 +179,7 @@ async fn test_error_handling_in_workflow() {
 #[serial]
 async fn test_duplicate_card_handling() {
     // Setup mock server
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     let url = server.url();
     std::env::set_var("ANKI_CONNECT_URL", &url);
     
@@ -219,7 +219,7 @@ async fn test_duplicate_card_handling() {
 #[serial]
 async fn test_model_already_exists_scenario() {
     // Setup mock server
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     let url = server.url();
     std::env::set_var("ANKI_CONNECT_URL", &url);
     
