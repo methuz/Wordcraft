@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 use std::env;
 
 pub struct AnkiAdapter {
-    url: String,
+    pub(crate) url: String,
     client: Client,
 }
 

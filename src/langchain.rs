@@ -86,7 +86,7 @@ pub async fn generate_flashcards(user_input: &str) -> Result<FlashcardResponse, 
 }
 
 // Helper function to extract JSON from the assistant's reply
-fn extract_json(text: &str) -> Result<String, Box<dyn std::error::Error>> {
+pub fn extract_json(text: &str) -> Result<String, Box<dyn std::error::Error>> {
     // Use regex to extract JSON between braces
     let re = Regex::new(r"(?s)\{.*\}")?;
     if let Some(mat) = re.find(text) {
